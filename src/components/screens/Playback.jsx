@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
+import { useIdleTimer } from '../../hooks/useIdleTimer.js'
 
 export default function Playback({ areas, onSwap, onChangeTrack, onSave }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [transitioning, setTransitioning] = useState(false)
+  const { idle, reset: resetIdle } = useIdleTimer(2000)
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -19,13 +21,25 @@ export default function Playback({ areas, onSwap, onChangeTrack, onSave }) {
   const photo = area.photos?.[0] || area.stockPhoto
   const isEven = currentIndex % 2 === 0
 
+  // Asymmetric fade: controls disappear slowly (600ms), reappear quickly (300ms)
+  const controlsStyle = {
+    opacity: idle ? 0 : 1,
+    transition: `opacity ${idle ? '600ms' : '300ms'} ease`,
+    pointerEvents: idle ? 'none' : 'auto',
+  }
+
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      background: '#000',
-      overflow: 'hidden',
-    }}>
+    <div
+      onMouseMove={resetIdle}
+      onTouchStart={resetIdle}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: '#000',
+        overflow: 'hidden',
+        cursor: idle ? 'none' : 'default',
+      }}
+    >
       {/* Photo + Ken Burns */}
       {photo && (
         <img
@@ -115,9 +129,11 @@ export default function Playback({ areas, onSwap, onChangeTrack, onSave }) {
           {area.affirmation}
         </p>
 
+        {/* Swap control — fades with idle */}
         <button
           onClick={onSwap}
           style={{
+            ...controlsStyle,
             marginTop: '18px',
             fontFamily: 'var(--font-ui)',
             fontWeight: 300,
@@ -134,8 +150,9 @@ export default function Playback({ areas, onSwap, onChangeTrack, onSave }) {
         </button>
       </div>
 
-      {/* Bottom controls */}
+      {/* Bottom controls — fade with idle */}
       <div style={{
+        ...controlsStyle,
         position: 'absolute',
         bottom: '32px',
         left: 0,
