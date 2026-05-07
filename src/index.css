@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+:root {
+  --cream: #FFF8F0;
+  --rose: #E8C4B8;
+  --burgundy: #2A1A14;
+  --blush: #D4A59A;
+  --near-black: #0D0A08;
+  --warm-white: #F5EDE0;
+  --font-heading: 'Cormorant Garamond', serif;
+  --font-accent: 'DM Serif Display', serif;
+  --font-ui: 'Jost', sans-serif;
+  --max-w: 680px;
+  --t-slow: 600ms ease;
+  --t-med: 300ms ease;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background: var(--cream);
+  color: var(--burgundy);
+  font-family: var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+}
+
+.field {
+  border: none;
+  border-bottom: 1px solid var(--blush);
+  background: transparent;
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 22px;
+  color: var(--burgundy);
+  width: 100%;
+  padding: 8px 0;
+  outline: none;
+}
+
+.field::placeholder {
+  color: var(--blush);
+  opacity: 0.7;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes loadLine {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+.screen-fade {
+  animation: fadeIn var(--t-slow) ease both;
+}
+
+/* BreathScreen */
+@keyframes breathPulse {
+  0%, 100% { transform: scale(1);    opacity: 0.4; }
+  50%       { transform: scale(1.2); opacity: 0.85; }
+}
+
+/* Playback — Ken Burns */
+@keyframes kenBurnsEven {
+  from { transform: scale(1)    translate(0, 0); }
+  to   { transform: scale(1.12) translate(-3%, -3%); }
+}
+@keyframes kenBurnsOdd {
+  from { transform: scale(1)    translate(0, 0); }
+  to   { transform: scale(1.12) translate(3%, 3%); }
+}
+
+/* Playback — VHS tracking line */
+@keyframes vhsTracking {
+  from { top: -2px; }
+  to   { top: calc(100% + 2px); }
+}
+
+/* Playback — VHS grain flicker */
+@keyframes vhsGrainFlicker {
+  0%   { background-position: 0 0; }
+  10%  { background-position: -5% -10%; }
+  20%  { background-position: -15% 5%; }
+  30%  { background-position: 7% -25%; }
+  40%  { background-position: -5% 25%; }
+  50%  { background-position: -15% 10%; }
+  60%  { background-position: 15% 0; }
+  70%  { background-position: 0 15%; }
+  80%  { background-position: 3% 35%; }
+  90%  { background-position: -10% 10%; }
+  100% { background-position: 0 0; }
+}
