@@ -19,16 +19,16 @@ export default function AreaPrompt({ area, areaIndex, onNext, onSkip }) {
     <div style={{
       minHeight: '100vh',
       display: 'flex',
-      alignItems: 'flex-start',
-      justifyContent: 'center',
+      flexDirection: 'column',
+      alignItems: 'center',
       padding: '40px',
       paddingTop: '60px',
     }}>
-      <div style={{ width: '100%', maxWidth: 'var(--max-w)', display: 'flex', flexDirection: 'column', gap: '32px' }}>
+      <div style={{ width: '100%', maxWidth: 'var(--max-w)', display: 'flex', flexDirection: 'column', flex: 1 }}>
 
         <ProgressDots current={areaIndex} />
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '32px', flex: 1 }}>
           <span style={{
             fontFamily: 'var(--font-accent)',
             fontStyle: 'italic',
@@ -70,11 +70,11 @@ export default function AreaPrompt({ area, areaIndex, onNext, onSkip }) {
           }}>
             — {area.cue}
           </p>
+
+          <UploadZone photos={photos} onChange={setPhotos} areaId={area.id} />
         </div>
 
-        <UploadZone photos={photos} onChange={setPhotos} areaId={area.id} />
-
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: 'auto', paddingTop: '32px' }}>
           <Button variant="ghost" onClick={handleSkip}>skip this one</Button>
           <Button onClick={handleNext}>
             {isFinal ? 'see my board →' : 'next area →'}
