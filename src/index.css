@@ -100,3 +100,9 @@ body {
   90%  { background-position: -10% 10%; }
   100% { background-position: 0 0; }
 }
+
+/* BreathScreen — hold phase gentle opacity pulse */
+@keyframes holdPulse {
+  0%, 100% { opacity: 0.65; }
+  50%      { opacity: 0.92; }
+}
