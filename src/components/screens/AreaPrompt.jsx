@@ -72,7 +72,7 @@ export default function AreaPrompt({ area, areaIndex, onNext, onSkip }) {
           </p>
         </div>
 
-        <UploadZone photos={photos} onChange={setPhotos} />
+        <UploadZone photos={photos} onChange={setPhotos} areaId={area.id} />
 
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
           <Button variant="ghost" onClick={handleSkip}>skip this one</Button>
