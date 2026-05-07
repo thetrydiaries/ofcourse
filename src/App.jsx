@@ -122,6 +122,7 @@ export default function App() {
       return (
         <BoardReveal
           areas={areas}
+          intention={intention}
           onEdit={() => navigate('area-0')}
           onBuild={() => handleBuild(areas)}
         />
@@ -173,6 +174,7 @@ export default function App() {
           onSwap={() => navigate('affirmation-review')}
           onChangeTrack={() => navigate('mood-selection')}
           onSave={() => navigate('download')}
+          onUpdateAreas={(updatedAreas) => setState(s => ({ ...s, areas: updatedAreas }))}
         />
       )
     }

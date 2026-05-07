@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { TRACKS } from '../../data/music.js'
 import Button from '../ui/Button.jsx'
 
@@ -7,10 +7,38 @@ const MOODS = ['calm', 'uplifting', 'grounding', 'triumphant']
 export default function MoodSelection({ onNext }) {
   const [mood, setMood] = useState(null)
   const [track, setTrack] = useState(null)
+  const [playingTrackId, setPlayingTrackId] = useState(null)
+  const audioRefs = useRef({})
 
   const handleMood = (m) => {
+    stopPreview()
     setMood(m)
     setTrack(null)
+  }
+
+  const stopPreview = () => {
+    if (playingTrackId && audioRefs.current[playingTrackId]) {
+      audioRefs.current[playingTrackId].pause()
+      audioRefs.current[playingTrackId].currentTime = 0
+    }
+    setPlayingTrackId(null)
+  }
+
+  const handleTrackHover = (trackId) => {
+    if (playingTrackId && playingTrackId !== trackId && audioRefs.current[playingTrackId]) {
+      audioRefs.current[playingTrackId].pause()
+      audioRefs.current[playingTrackId].currentTime = 0
+    }
+    const audio = audioRefs.current[trackId]
+    if (audio?.src) {
+      audio.currentTime = 0
+      audio.play().catch(() => {})
+      setPlayingTrackId(trackId)
+    }
+  }
+
+  const handleTrackLeave = () => {
+    stopPreview()
   }
 
   return (
@@ -48,6 +76,16 @@ export default function MoodSelection({ onNext }) {
 
         {mood && (
           <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {/* Hidden audio elements for preview */}
+            {TRACKS[mood].map(t => t.url && (
+              <audio
+                key={t.id}
+                ref={el => { if (el) audioRefs.current[t.id] = el }}
+                src={t.url}
+                preload="metadata"
+              />
+            ))}
+
             {TRACKS[mood].length === 0 ? (
               <p style={{
                 fontFamily: 'var(--font-heading)',
@@ -63,6 +101,8 @@ export default function MoodSelection({ onNext }) {
                 <button
                   key={t.id}
                   onClick={() => setTrack(t)}
+                  onMouseEnter={() => handleTrackHover(t.id)}
+                  onMouseLeave={handleTrackLeave}
                   style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -70,12 +110,14 @@ export default function MoodSelection({ onNext }) {
                     padding: '20px 0',
                     background: track?.id === t.id ? 'rgba(232,196,184,0.12)' : 'transparent',
                     borderTop: 'none',
-                    borderLeft: 'none',
+                    borderLeft: playingTrackId === t.id ? '3px solid var(--rose)' : '3px solid transparent',
                     borderRight: 'none',
                     borderBottom: '1px solid rgba(212,165,154,0.2)',
+                    paddingLeft: '9px',
                     cursor: 'pointer',
                     width: '100%',
                     textAlign: 'left',
+                    transition: 'background 300ms ease, border-left-color 200ms ease',
                   }}
                 >
                   <span style={{

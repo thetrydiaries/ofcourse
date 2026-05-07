@@ -9,6 +9,6 @@ const crossOriginHeaders = {
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  server: { headers: crossOriginHeaders },
+  server: { headers: crossOriginHeaders, proxy: { '/api': 'http://localhost:3000' } },
   preview: { headers: crossOriginHeaders },
 })

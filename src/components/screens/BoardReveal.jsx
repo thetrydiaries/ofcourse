@@ -1,6 +1,6 @@
 import Button from '../ui/Button.jsx'
 
-export default function BoardReveal({ areas, onEdit, onBuild }) {
+export default function BoardReveal({ areas, intention, onEdit, onBuild }) {
   return (
     <div style={{
       minHeight: '100vh',
@@ -11,6 +11,14 @@ export default function BoardReveal({ areas, onEdit, onBuild }) {
       padding: '40px',
       gap: '48px',
     }}>
+      {intention && (
+        <div className="board-title">
+          <p className="board-title-preamble">You're building this mind movie for one reason:</p>
+          <p className="board-title-intention">{intention}</p>
+          <p className="board-title-closing">Watch it every day. Let it become your normal.</p>
+        </div>
+      )}
+
       <div style={{
         width: '100%',
         maxWidth: 'var(--max-w)',

@@ -1,7 +1,32 @@
 import { useState, useEffect } from 'react'
 import { useIdleTimer } from '../../hooks/useIdleTimer.js'
+import BoardEditMode from './BoardEditMode.jsx'
 
-export default function Playback({ areas, onSwap, onChangeTrack, onSave }) {
+export default function Playback({ areas, onSwap, onChangeTrack, onSave, onUpdateAreas }) {
+  const [editMode, setEditMode] = useState(false)
+
+  if (editMode) {
+    return (
+      <BoardEditMode
+        areas={areas}
+        onDone={(updatedAreas) => {
+          onUpdateAreas(updatedAreas)
+          setEditMode(false)
+        }}
+      />
+    )
+  }
+
+  return <PlaybackView
+    areas={areas}
+    onSwap={onSwap}
+    onChangeTrack={onChangeTrack}
+    onSave={onSave}
+    onEditBoard={() => setEditMode(true)}
+  />
+}
+
+function PlaybackView({ areas, onSwap, onChangeTrack, onSave, onEditBoard }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [transitioning, setTransitioning] = useState(false)
   const { idle, reset: resetIdle } = useIdleTimer(2000)
@@ -163,6 +188,22 @@ export default function Playback({ areas, onSwap, onChangeTrack, onSave }) {
         gap: '40px',
         zIndex: 20,
       }}>
+        <button
+          onClick={onEditBoard}
+          style={{
+            fontFamily: 'var(--font-ui)',
+            fontWeight: 300,
+            fontSize: '12px',
+            color: 'rgba(245,237,224,0.7)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 0,
+            letterSpacing: '0.04em',
+          }}
+        >
+          edit board
+        </button>
         <button
           onClick={onChangeTrack}
           style={{

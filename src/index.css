@@ -106,3 +106,59 @@ body {
   0%, 100% { opacity: 0.65; }
   50%      { opacity: 0.92; }
 }
+
+/* B1 — Board title */
+.board-title {
+  text-align: center;
+  margin-bottom: 48px;
+  max-width: var(--max-w);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 40px 0;
+}
+
+.board-title-preamble {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 28px;
+  color: var(--burgundy);
+  opacity: 0.7;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+.board-title-intention {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 32px;
+  color: var(--burgundy);
+  opacity: 1;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
+}
+
+.board-title-closing {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--blush);
+  opacity: 0.6;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* B2 — Board edit mode cells */
+.edit-cell-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(42, 26, 20, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.edit-cell:hover .edit-cell-overlay {
+  opacity: 1;
+}
