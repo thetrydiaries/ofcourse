@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { AREAS } from './data/areas.js'
 import { fetchAffirmations } from './utils/affirmations.js'
 import { fetchStockPhoto } from './utils/pexels.js'
@@ -6,7 +6,6 @@ import Landing from './components/screens/Landing.jsx'
 import IntentionSetting from './components/screens/IntentionSetting.jsx'
 import AreaPrompt from './components/screens/AreaPrompt.jsx'
 import BoardReveal from './components/screens/BoardReveal.jsx'
-import AILoading from './components/screens/AILoading.jsx'
 import AffirmationReview from './components/screens/AffirmationReview.jsx'
 import MoodSelection from './components/screens/MoodSelection.jsx'
 import BreathScreen from './components/screens/BreathScreen.jsx'
@@ -41,6 +40,8 @@ const initialState = {
 
 export default function App() {
   const [state, setState] = useState(initialState)
+  // Holds the in-flight affirmation/stock-photo fetch so it runs during mood + breath
+  const buildPromiseRef = useRef(null)
 
   const navigate = (screen) =>
     setState(s => ({ ...s, currentScreen: screen }))
@@ -51,23 +52,33 @@ export default function App() {
       areas: s.areas.map((a, i) => i === index ? { ...a, ...patch } : a),
     }))
 
-  const handleBuild = async (currentAreas) => {
-    setState(s => ({ ...s, currentScreen: 'ai-loading', buildError: null }))
+  // Kick off the AI fetch immediately, navigate to mood-selection — no loading screen.
+  // By the time the user finishes mood selection + breath (~30s), the fetch is done.
+  const handleBuild = (currentAreas) => {
+    buildPromiseRef.current = Promise.all([
+      fetchAffirmations(currentAreas, state.userName, state.intention),
+      Promise.all(
+        currentAreas.map(a =>
+          a.skipped ? fetchStockPhoto(a.label) : Promise.resolve(null)
+        )
+      ),
+    ])
+    navigate('mood-selection')
+  }
 
+  // Called when breath screen ends. Awaits the build promise (should already be
+  // resolved by now), applies results, then advances to affirmation-review.
+  const handleBreathDone = async () => {
+    if (!buildPromiseRef.current) {
+      navigate('affirmation-review')
+      return
+    }
     try {
-      const [affirmations, stockPhotos] = await Promise.all([
-        fetchAffirmations(currentAreas, state.userName, state.intention),
-        Promise.all(
-          currentAreas.map(a =>
-            a.skipped ? fetchStockPhoto(a.label) : Promise.resolve(null)
-          )
-        ),
-      ])
-
+      const [affirmations, stockPhotos] = await buildPromiseRef.current
+      buildPromiseRef.current = null
       setState(s => ({
         ...s,
         currentScreen: 'affirmation-review',
-        buildError: null,
         areas: s.areas.map((a, i) => ({
           ...a,
           affirmation: affirmations[i] ?? '',
@@ -76,11 +87,12 @@ export default function App() {
       }))
     } catch (err) {
       console.error('Build failed:', err)
-      setState(s => ({ ...s, buildError: err.message }))
+      buildPromiseRef.current = null
+      navigate('board')
     }
   }
 
-  const { currentScreen, userName, intention, areas, buildError } = state
+  const { currentScreen, userName, intention, areas } = state
 
   const areaMatch = currentScreen.match(/^area-(\d+)$/)
   const areaIndex = areaMatch ? parseInt(areaMatch[1]) : null
@@ -132,25 +144,6 @@ export default function App() {
       )
     }
 
-    if (currentScreen === 'ai-loading') {
-      return <AILoading error={buildError} onRetry={() => handleBuild(areas)} />
-    }
-
-    if (currentScreen === 'affirmation-review') {
-      return (
-        <AffirmationReview
-          areas={areas}
-          onNext={(updatedAffirmations) => {
-            setState(s => ({
-              ...s,
-              currentScreen: 'mood-selection',
-              areas: s.areas.map((a, i) => ({ ...a, affirmation: updatedAffirmations[i] })),
-            }))
-          }}
-        />
-      )
-    }
-
     if (currentScreen === 'mood-selection') {
       return (
         <MoodSelection
@@ -168,7 +161,22 @@ export default function App() {
     }
 
     if (currentScreen === 'breath') {
-      return <BreathScreen onDone={() => navigate('playback')} />
+      return <BreathScreen onDone={handleBreathDone} />
+    }
+
+    if (currentScreen === 'affirmation-review') {
+      return (
+        <AffirmationReview
+          areas={areas}
+          onNext={(updatedAffirmations) => {
+            setState(s => ({
+              ...s,
+              currentScreen: 'playback',
+              areas: s.areas.map((a, i) => ({ ...a, affirmation: updatedAffirmations[i] })),
+            }))
+          }}
+        />
+      )
     }
 
     if (currentScreen === 'playback') {

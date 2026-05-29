@@ -20,7 +20,7 @@ async function blackFrameBytes() {
     canvas.width = 1920
     canvas.height = 1080
     const ctx = canvas.getContext('2d')
-    ctx.fillStyle = '#0D0A08'
+    ctx.fillStyle = '#1a0f06'
     ctx.fillRect(0, 0, 1920, 1080)
     canvas.toBlob(
       (blob) => blob.arrayBuffer().then((buf) => resolve(new Uint8Array(buf))),
@@ -49,7 +49,6 @@ export async function exportVideo(areas, track, onProgress, mode = 'immersive') 
       "pad=1920:1080:(ow-iw)/2:(oh-ih)/2," +
       "zoompan=z='min(zoom+0.001,1.05)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':d=270"
   } else {
-    // All photos per area, hard cuts, 2s each
     frames = areas.flatMap(a => {
       const photos = a?.photos?.filter(Boolean)
       return photos?.length ? photos : [a?.stockPhoto ?? null]
@@ -65,11 +64,18 @@ export async function exportVideo(areas, track, onProgress, mode = 'immersive') 
     await ffmpeg.writeFile(`img${i}.jpg`, data)
   }
 
-  await ffmpeg.writeFile('track.mp3', await fetchFile(track.url))
+  await ffmpeg.writeFile('track.mp3', await fetchFile(
+    track.url.startsWith('/') ? `${window.location.origin}${track.url}` : track.url
+  ))
 
+  // -stream_loop -1 loops the audio so it covers the full video duration.
+  // We omit -shortest because zoompan prevents FFmpeg from knowing the video
+  // duration upfront, which caused -shortest to terminate audio immediately.
+  // Instead, the video stream ends naturally when the image sequence runs out.
   await ffmpeg.exec([
     '-framerate', framerate,
     '-i', 'img%d.jpg',
+    '-stream_loop', '-1',
     '-i', 'track.mp3',
     '-map', '0:v',
     '-map', '1:a',
@@ -77,7 +83,8 @@ export async function exportVideo(areas, track, onProgress, mode = 'immersive') 
     '-pix_fmt', 'yuv420p',
     '-c:a', 'aac',
     '-b:a', '128k',
-    '-shortest',
+    '-ar', '44100',
+    '-ac', '2',
     '-vf', vf,
     'output.mp4',
   ])
