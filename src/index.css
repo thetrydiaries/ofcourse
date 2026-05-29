@@ -101,6 +101,12 @@ body {
   100% { background-position: 0 0; }
 }
 
+/* Playback — TV glow pulse */
+@keyframes tvGlowPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.8; }
+}
+
 /* BreathScreen — hold phase gentle opacity pulse */
 @keyframes holdPulse {
   0%, 100% { opacity: 0.65; }

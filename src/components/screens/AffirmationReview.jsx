@@ -106,7 +106,7 @@ function AffirmationCard({ area, affirmation, isEditing, onSwap, onEditDone }) {
             padding: 0,
           }}
         >
-          swap
+          rewrite
         </button>
       )}
     </div>

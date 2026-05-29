@@ -12,6 +12,7 @@ import MoodSelection from './components/screens/MoodSelection.jsx'
 import BreathScreen from './components/screens/BreathScreen.jsx'
 import Playback from './components/screens/Playback.jsx'
 import Download from './components/screens/Download.jsx'
+import DevShortcut from './components/DevShortcut.jsx'
 
 const Grain = ({ opacity = 0.07 }) => (
   <div aria-hidden="true" style={{
@@ -35,6 +36,7 @@ const initialState = {
   })),
   selectedMood: null,
   selectedTrack: null,
+  videoMode: 'immersive',
 }
 
 export default function App() {
@@ -50,7 +52,7 @@ export default function App() {
     }))
 
   const handleBuild = async (currentAreas) => {
-    navigate('ai-loading')
+    setState(s => ({ ...s, currentScreen: 'ai-loading', buildError: null }))
 
     try {
       const [affirmations, stockPhotos] = await Promise.all([
@@ -65,6 +67,7 @@ export default function App() {
       setState(s => ({
         ...s,
         currentScreen: 'affirmation-review',
+        buildError: null,
         areas: s.areas.map((a, i) => ({
           ...a,
           affirmation: affirmations[i] ?? '',
@@ -73,11 +76,11 @@ export default function App() {
       }))
     } catch (err) {
       console.error('Build failed:', err)
-      navigate('board')
+      setState(s => ({ ...s, buildError: err.message }))
     }
   }
 
-  const { currentScreen, userName, intention, areas } = state
+  const { currentScreen, userName, intention, areas, buildError } = state
 
   const areaMatch = currentScreen.match(/^area-(\d+)$/)
   const areaIndex = areaMatch ? parseInt(areaMatch[1]) : null
@@ -130,7 +133,7 @@ export default function App() {
     }
 
     if (currentScreen === 'ai-loading') {
-      return <AILoading />
+      return <AILoading error={buildError} onRetry={() => handleBuild(areas)} />
     }
 
     if (currentScreen === 'affirmation-review') {
@@ -151,12 +154,13 @@ export default function App() {
     if (currentScreen === 'mood-selection') {
       return (
         <MoodSelection
-          onNext={(mood, track) => {
+          onNext={(mood, track, videoMode) => {
             setState(s => ({
               ...s,
               currentScreen: 'breath',
               selectedMood: mood,
               selectedTrack: track,
+              videoMode,
             }))
           }}
         />
@@ -171,6 +175,7 @@ export default function App() {
       return (
         <Playback
           areas={areas}
+          videoMode={state.videoMode}
           onSwap={() => navigate('affirmation-review')}
           onChangeTrack={() => navigate('mood-selection')}
           onSave={() => navigate('download')}
@@ -184,6 +189,7 @@ export default function App() {
         <Download
           areas={areas}
           selectedTrack={state.selectedTrack}
+          videoMode={state.videoMode}
           userName={userName}
         />
       )
@@ -206,6 +212,7 @@ export default function App() {
       <div className="screen-fade" key={currentScreen}>
         {renderScreen()}
       </div>
+      <DevShortcut onJump={(devState) => setState(devState)} />
     </>
   )
 }

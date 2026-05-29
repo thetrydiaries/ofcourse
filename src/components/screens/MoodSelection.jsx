@@ -4,9 +4,15 @@ import Button from '../ui/Button.jsx'
 
 const MOODS = ['calm', 'uplifting', 'grounding', 'triumphant']
 
+const VIDEO_MODES = {
+  immersive: 'dwell in it — slow, unhurried, one image at a time',
+  energise: 'a quick morning spark — fast cuts, all your photos',
+}
+
 export default function MoodSelection({ onNext }) {
   const [mood, setMood] = useState(null)
   const [track, setTrack] = useState(null)
+  const [videoMode, setVideoMode] = useState('immersive')
   const [playingTrackId, setPlayingTrackId] = useState(null)
   const audioRefs = useRef({})
 
@@ -142,9 +148,46 @@ export default function MoodSelection({ onNext }) {
           </div>
         )}
 
+        {/* Pace / video mode */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {Object.keys(VIDEO_MODES).map(m => (
+              <button
+                key={m}
+                onClick={() => setVideoMode(m)}
+                style={{
+                  fontFamily: 'var(--font-ui)',
+                  fontWeight: 300,
+                  fontSize: '13px',
+                  letterSpacing: '0.04em',
+                  padding: '9px 24px',
+                  borderRadius: '999px',
+                  border: '1px solid var(--blush)',
+                  background: videoMode === m ? 'var(--burgundy)' : 'transparent',
+                  color: videoMode === m ? 'var(--cream)' : 'var(--blush)',
+                  cursor: 'pointer',
+                  transition: 'background var(--t-med), color var(--t-med)',
+                }}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+          <p style={{
+            fontFamily: 'var(--font-heading)',
+            fontStyle: 'italic',
+            fontSize: '14px',
+            color: 'var(--blush)',
+            opacity: 0.7,
+            margin: 0,
+          }}>
+            {VIDEO_MODES[videoMode]}
+          </p>
+        </div>
+
         <Button
           disabled={!track}
-          onClick={() => onNext(mood, track)}
+          onClick={() => onNext(mood, track, videoMode)}
         >
           this feels right →
         </Button>

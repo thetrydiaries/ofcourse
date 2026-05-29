@@ -1,3 +1,11 @@
-export const TRACKS = { calm:[
-    { id: 'calm-1', name: 'Nostalgia', duration: '3:02', url: 'https://pixabay.com/music/download/days-are-passing-inspiring-piano-emotion-252903.mp3?attachment=&turnstile-response=0.KzH5kCrzF25d9SWFnnLkDIemLcWVLjX25rMHMvwflsb7EsI7YbC3f9zpkiBOeEt92KTHu39g6YEd7ciY3TIvUWwthCyNc1D4_qk9Z5DhB5vnyxaaKwpTLiW5MxViU2N23VYyBcVExISyYXgz-aglpyVD7EBOC8U_GOR-A9E2sEfPEHxRAxEm_VSZ1SwpoUmB81XWbDY8SQIxBNi4HA1tWTXY7GUji7pjScLFN2KA5kIbqG5vEpNsrBW9iqFDNsHgIQXCXsSx0JR1Xj5qVLrdz9xzhFrUi_4vas8tZW7eeje6q6jnIKOyzJzP-OoVgE5i_zher6eYna9AOpXbTg_dZBxjMlWx6HDvSqwygCZdCvxnZuqmQXjg68rRhZI9DDyDcFJBG2mw4xgkArsimyJACv_qd27bDa8nLc3V9EO8YRcGLb03yWxRp7AiMXANxcvQAERgMUFZRqPGcZ9axEcxYLAbx4ldijLIBz-0A_WiuTmPmgABXCvodm62XY2nNaZtnKhcd3V6T0Lt6jJg3jJ-7pnxPFRW-4efj3yKFyNsYJJGrOViadKkgpGm4FW6BW45hFKnyy2bLz435J0tIQbM7v8BqS9e3btmhynQsdtvfCoQDqJKh_ufmkHOFA_nUtGCQLCmzZbiwb-ujFmp81BsuY2qNa4Lms6Ou_LsulKJqLZq3nhAarVltxzrtPKt3FI3-Pc-oQj2DcdXRX5Jw7Hc3wj3noDnB5J8wRvcx83PFlAQ2014DXudl4WHrezK-J6NqWFtUoyywIQEjbpr71dhGFmkcgyFxAOlyEgvmVDFYqD1N-FlyJOO0rh2dktmuaNQnIvzpLRpDurm2b3O48pEv0wHnYnDRZ_bDTExXQ587VxBMVCFd7ZW_mKBmdPRx5L_shYoNkE-NKCvJhdT_cVOmXBjk5bklVT04JknODcygtjnVl39s8uBS0Luiej1eC_afXFXTVGeqFS5ezd81XGY_g.75GhEwFnlvvUTFjdXmRFJA.496ce76a3556ae9400e598a1f03b3278161b39b383cff61d0b65ceb6b05b4716&remote_template=1'},
-], uplifting:[], grounding:[], triumphant:[] }
+export const TRACKS = {
+  calm: [],
+  uplifting: [
+    { id: 'uplifting-1', name: 'Days Are Passing', duration: '3:02', url: '/music/uplifting-days-are-passing.mp3' },
+    { id: 'uplifting-2', name: 'Inspiring Uplifting', duration: '', url: '/music/uplifting-inspiring.mp3' },
+  ],
+  grounding: [
+    { id: 'grounding-1', name: 'Meditation', duration: '', url: '/music/grounding-meditation.mp3' },
+  ],
+  triumphant: [],
+}

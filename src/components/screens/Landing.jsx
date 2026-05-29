@@ -32,6 +32,41 @@ export default function Landing({ onBegin }) {
         because of course this is already your life
       </p>
 
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '10px',
+        marginTop: '8px',
+        maxWidth: '360px',
+      }}>
+        <div style={{
+          width: '32px',
+          height: '1px',
+          background: 'var(--rose)',
+          opacity: 0.5,
+          marginBottom: '4px',
+        }} />
+        {[
+          'set aside about 20 minutes',
+          'you\'ll move through 8 areas of your life',
+          'have a few images ready — your camera roll, screenshots, anything that captures the feeling',
+        ].map((line, i) => (
+          <p key={i} style={{
+            fontFamily: 'var(--font-heading)',
+            fontStyle: 'italic',
+            fontSize: 'clamp(12px, 1.4vw, 14px)',
+            color: 'var(--blush)',
+            opacity: 0.7,
+            textAlign: 'center',
+            lineHeight: 1.5,
+            margin: 0,
+          }}>
+            {line}
+          </p>
+        ))}
+      </div>
+
       <button
         onClick={onBegin}
         style={{

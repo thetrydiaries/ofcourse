@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { exportVideo } from '../../utils/videoExport.js'
 import { generateFilename } from '../../utils/filename.js'
 
-export default function Download({ areas, selectedTrack, userName }) {
+export default function Download({ areas, selectedTrack, videoMode, userName }) {
   const [exporting, setExporting] = useState(false)
   const [progress, setProgress] = useState(0)
 
@@ -13,7 +13,7 @@ export default function Download({ areas, selectedTrack, userName }) {
     setExporting(true)
     setProgress(0)
     try {
-      const blob = await exportVideo(areas, selectedTrack, setProgress)
+      const blob = await exportVideo(areas, selectedTrack, setProgress, videoMode)
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
