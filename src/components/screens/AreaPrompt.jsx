@@ -31,11 +31,11 @@ export default function AreaPrompt({ area, areaIndex, onNext, onSkip }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '32px', flex: 1 }}>
           <span style={{
             fontFamily: 'var(--font-accent)',
-            fontStyle: 'italic',
+            fontWeight: 500,
             fontSize: '12px',
-            color: 'var(--blush)',
+            color: 'var(--gh-kicker)',
             textTransform: 'uppercase',
-            letterSpacing: '0.1em',
+            letterSpacing: '0.26em',
           }}>
             {area.number} — {area.label}
           </span>

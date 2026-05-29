@@ -1,9 +1,6 @@
 import { useState, useEffect } from 'react'
 import Button from '../ui/Button.jsx'
 
-// inhale 4s → hold 1.5s → exhale 6s → done
-// Echo ring fades in from t=2s into inhale, fades out during exhale
-
 const PHASE_LABELS = {
   ready: 'take a breath. let yourself arrive.',
   inhale: 'inhale',
@@ -12,7 +9,6 @@ const PHASE_LABELS = {
 }
 
 function getCircleStyle(phase) {
-  // Base element is 60px. Scale(4) = 240px visual diameter.
   const scale = (phase === 'inhale' || phase === 'hold') ? 4 : 1
   const transition =
     phase === 'inhale' ? 'transform 4s cubic-bezier(0.4,0,0.2,1)' :
@@ -32,22 +28,19 @@ export default function BreathScreen({ onDone }) {
   useEffect(() => {
     if (prefersReducedMotion) return
 
-    // Small delay so the initial scale transition actually fires
     const t0 = setTimeout(() => setPhase('inhale'), 50)
-    const t1 = setTimeout(() => setEchoVisible(true), 2050)       // 2s into inhale
-    const t2 = setTimeout(() => setPhase('hold'), 4050)           // inhale done
-    const t3 = setTimeout(() => {                                  // exhale starts
+    const t1 = setTimeout(() => setEchoVisible(true), 2050)
+    const t2 = setTimeout(() => setPhase('hold'), 4050)
+    const t3 = setTimeout(() => {
       setPhase('exhale')
       setEchoVisible(false)
     }, 5550)
-    const t4 = setTimeout(onDone, 11550)                          // exhale done
+    const t4 = setTimeout(onDone, 11550)
 
     return () => [t0, t1, t2, t3, t4].forEach(clearTimeout)
   }, [onDone, prefersReducedMotion])
 
   const { scale, transition, animation } = getCircleStyle(phase)
-
-  // Echo ring transition: slow fade-out during exhale, normal fade-in otherwise
   const echoTransition = `opacity ${phase === 'exhale' ? '6s' : '1.5s'} ease`
 
   if (prefersReducedMotion) {
@@ -57,9 +50,7 @@ export default function BreathScreen({ onDone }) {
           <div style={{ ...echoRingBase, opacity: 0.2 }} />
           <div style={{ ...circleBase, transform: 'scale(2.5)', opacity: 0.7 }} />
         </div>
-        <p style={labelStyle}>
-          take a breath. let yourself arrive.
-        </p>
+        <p style={labelStyle}>take a breath. let yourself arrive.</p>
         <Button onClick={onDone}>begin</Button>
       </div>
     )
@@ -67,16 +58,12 @@ export default function BreathScreen({ onDone }) {
 
   return (
     <div style={containerStyle}>
-      {/* Circle + echo ring in a shared 300px container so they stay co-centred */}
       <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: 300, height: 300 }}>
-        {/* Echo ring: 300px, fades in at t=2s, fades out during exhale */}
         <div style={{
           ...echoRingBase,
-          opacity: echoVisible ? 0.28 : 0,
+          opacity: echoVisible ? 0.25 : 0,
           transition: echoTransition,
         }} />
-
-        {/* Main breath circle: 60px base, scaled by CSS transform */}
         <div style={{
           ...circleBase,
           transform: `scale(${scale})`,
@@ -85,7 +72,6 @@ export default function BreathScreen({ onDone }) {
         }} />
       </div>
 
-      {/* Label: re-keyed on phase so it fades in fresh each time */}
       <p key={phase} style={labelStyle}>
         {PHASE_LABELS[phase]}
       </p>
@@ -108,8 +94,8 @@ const circleBase = {
   width: 60,
   height: 60,
   borderRadius: '50%',
-  background: 'radial-gradient(circle, rgba(212,165,154,0.35) 0%, rgba(212,165,154,0.08) 100%)',
-  border: '1px solid rgba(245,237,224,0.35)',
+  background: 'radial-gradient(circle, rgba(196,154,100,0.3) 0%, rgba(196,154,100,0.07) 100%)',
+  border: '1px solid rgba(253,246,232,0.3)',
 }
 
 const echoRingBase = {
@@ -117,17 +103,18 @@ const echoRingBase = {
   width: 300,
   height: 300,
   borderRadius: '50%',
-  border: '1px solid rgba(245,237,224,0.25)',
+  border: '1px solid rgba(253,246,232,0.22)',
   background: 'transparent',
 }
 
 const labelStyle = {
   fontFamily: 'var(--font-heading)',
   fontStyle: 'italic',
+  fontWeight: 300,
   fontSize: '16px',
   color: 'var(--warm-white)',
-  letterSpacing: '0.08em',
+  letterSpacing: '0.06em',
   textAlign: 'center',
-  opacity: 0.7,
+  opacity: 0.65,
   animation: 'fadeIn 400ms ease both',
 }

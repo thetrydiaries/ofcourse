@@ -48,16 +48,16 @@ function AffirmationCard({ area, affirmation, isEditing, onSwap, onEditDone }) {
   return (
     <div style={{
       padding: '32px 0',
-      borderBottom: '1px solid rgba(212,165,154,0.2)',
+      borderBottom: '1px solid var(--gh-link-rule)',
       position: 'relative',
     }}>
       <span style={{
         fontFamily: 'var(--font-accent)',
-        fontStyle: 'italic',
+        fontWeight: 500,
         fontSize: '12px',
-        color: 'var(--blush)',
+        color: 'var(--gh-kicker)',
         textTransform: 'uppercase',
-        letterSpacing: '0.1em',
+        letterSpacing: '0.26em',
         display: 'block',
         marginBottom: '12px',
       }}>

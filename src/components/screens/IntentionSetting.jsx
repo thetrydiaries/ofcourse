@@ -5,12 +5,13 @@ function FieldLabel({ children }) {
   return (
     <label style={{
       fontFamily: 'var(--font-accent)',
-      fontStyle: 'italic',
-      fontSize: '12px',
-      color: 'var(--blush)',
-      letterSpacing: '0.06em',
+      fontWeight: 500,
+      fontSize: '11.5px',
+      color: 'var(--gh-kicker)',
+      textTransform: 'uppercase',
+      letterSpacing: '0.26em',
       display: 'block',
-      marginBottom: '8px',
+      marginBottom: '10px',
     }}>
       {children}
     </label>
